@@ -36,18 +36,31 @@
         </div>
         <div class="pk-video-grid">
           <article class="pk-video-card">
-            <video data-pk-autoplay muted loop playsinline preload="metadata" poster="{{ 'furkit-clip-chamber.jpg' | asset_url }}" aria-label="Collection chamber demonstration"><source src="{{ 'furkit-clip-chamber.mp4' | asset_url }}" type="video/mp4"></video>
-            <div><span>01</span><strong>Collection chamber</strong><small>Real product demo</small></div>
+            <div class="pk-video-wrap">
+              <video data-pk-autoplay muted loop playsinline preload="none" poster="{{ 'furkit-clip-chamber.jpg' | asset_url }}" aria-label="Collection chamber demonstration"><source src="{{ 'furkit-clip-chamber.mp4' | asset_url }}" type="video/mp4"></video>
+              <button class="pk-video-toggle" type="button" aria-label="Play or pause demo video" data-pk-video-toggle><span aria-hidden="true">❚❚</span></button>
+            </div>
+            <div class="pk-video-card__meta"><span>01</span><strong>Collection chamber</strong><small>Real product demo · muted</small></div>
           </article>
           <article class="pk-video-card pk-video-card--featured">
-            <video data-pk-autoplay muted loop playsinline preload="metadata" poster="{{ 'furkit-clip-roll.jpg' | asset_url }}" aria-label="Rolling action demonstration"><source src="{{ 'furkit-clip-roll.mp4' | asset_url }}" type="video/mp4"></video>
-            <div><span>02</span><strong>Rolling action</strong><small>Real product demo</small></div>
+            <div class="pk-video-wrap">
+              <video data-pk-autoplay muted loop playsinline preload="none" poster="{{ 'furkit-clip-roll.jpg' | asset_url }}" aria-label="Rolling action demonstration"><source src="{{ 'furkit-clip-roll.mp4' | asset_url }}" type="video/mp4"></video>
+              <button class="pk-video-toggle" type="button" aria-label="Play or pause demo video" data-pk-video-toggle><span aria-hidden="true">❚❚</span></button>
+            </div>
+            <div class="pk-video-card__meta"><span>02</span><strong>Rolling action</strong><small>Real product demo · muted</small></div>
           </article>
           <article class="pk-video-card">
-            <video data-pk-autoplay muted loop playsinline preload="metadata" poster="{{ 'furkit-clip-result.jpg' | asset_url }}" aria-label="Collected fur result"><source src="{{ 'furkit-clip-result.mp4' | asset_url }}" type="video/mp4"></video>
-            <div><span>03</span><strong>Collected result</strong><small>Real product demo</small></div>
+            <div class="pk-video-wrap">
+              <video data-pk-autoplay muted loop playsinline preload="none" poster="{{ 'furkit-clip-result.jpg' | asset_url }}" aria-label="Collected fur result"><source src="{{ 'furkit-clip-result.mp4' | asset_url }}" type="video/mp4"></video>
+              <button class="pk-video-toggle" type="button" aria-label="Play or pause demo video" data-pk-video-toggle><span aria-hidden="true">❚❚</span></button>
+            </div>
+            <div class="pk-video-card__meta"><span>03</span><strong>Collected result</strong><small>Real product demo · muted</small></div>
           </article>
         </div>
+        <details class="pk-transcript">
+          <summary>Video transcripts (text alternative)</summary>
+          <p>Clip 1 — Collection chamber: the roller is opened to show collected fur stored inside. Clip 2 — Rolling action: short strokes lift fur from fabric into the roller. Clip 3 — Collected result: the chamber is emptied over a bin. All clips are muted product demonstrations.</p>
+        </details>
       </div>
     </section>
   {% endif %}
@@ -115,6 +128,45 @@
       </section>
   {% endcase %}
 
+  {% if section.settings.show_pairing %}
+  <section class="pk-section pk-pairing" aria-labelledby="pk-pairing-{{ section.id }}">
+    <div class="pk-shell">
+      <div class="pk-section-heading pk-section-heading--center">
+        <div class="pk-kicker"><span></span>Complete the routine</div>
+        <h2 id="pk-pairing-{{ section.id }}">One for home. One to carry.</h2>
+        <p>Shoppers who grab both spend less time re-cleaning. Add in one tap — no page reload.</p>
+      </div>
+      <div class="pk-shop__grid pk-pairing__grid">
+        {% assign pair_count = 0 %}
+        {% for pair_handle in section.settings.pair_products %}
+          {% assign pair_product = all_products[pair_handle] %}
+          {% if pair_product != blank and pair_product.handle != product.handle and pair_count < 2 %}
+            {% assign pair_count = pair_count | plus: 1 %}
+            {% assign pair_variant = pair_product.selected_or_first_available_variant %}
+            <article class="pk-shop-card">
+              <a class="pk-shop-card__media" href="{{ pair_product.url }}" aria-label="View {{ pair_product.title }}">
+                {% if pair_product.featured_image %}{{ pair_product.featured_image | image_url: width: 800 | image_tag: loading: 'lazy', decoding: 'async', alt: pair_product.title }}{% else %}<img src="{{ 'furkit-gallery-04.jpg' | asset_url }}" width="800" height="800" loading="lazy" decoding="async" alt="{{ pair_product.title }}">{% endif %}
+                <span>PAIR IT</span>
+              </a>
+              <div class="pk-shop-card__body">
+                <div><h3>{{ pair_product.title }}</h3><p>{{ pair_product.description | strip_html | truncate: 90 }}</p></div>
+                <div class="pk-shop-card__price">{{ pair_product.price | money }}</div>
+                {% form 'product', pair_product, class: 'pk-card-form' %}
+                  <input type="hidden" name="id" value="{{ pair_variant.id }}">
+                  <button class="pk-add" type="submit" name="add" {% unless pair_variant.available %}disabled{% endunless %}><span>{% if pair_variant.available %}Add {{ pair_product.title | truncate: 18 }}{% else %}Sold out{% endif %}</span><strong>→</strong></button>
+                {% endform %}
+              </div>
+            </article>
+          {% endif %}
+        {% endfor %}
+        {% if pair_count == 0 %}
+          <p class="pk-pairing__empty">Pick 2 cross-sell products in Theme Editor → PawKind product story → Pair products.</p>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
   <section class="pk-section pk-care-guide">
     <div class="pk-shell">
       <div class="pk-section-heading pk-section-heading--center">
@@ -132,7 +184,7 @@
   <section class="pk-final">
     <div class="pk-shell pk-final__inner">
       <div><div class="pk-kicker pk-kicker--light"><span></span>Ready for a cleaner reset?</div><h2>{% if page_kind == 'detail_brush' %}Touch up.<br>Head out.{% elsif page_kind == 'complete_set' %}Two tools.<br>One calmer home.{% else %}Roll. Empty.<br>Reuse.{% endif %}</h2></div>
-      <div><p>Your product gallery, price, options and checkout controls are waiting at the top of this page.</p><a class="pk-button pk-button--cream" href="#MainProduct">Back to buy <span aria-hidden="true">↑</span></a></div>
+      <div><p>Your product gallery, price, options and checkout controls are waiting at the top of this page.</p><a class="pk-button pk-button--cream" href="#MainContent">Back to buy <span aria-hidden="true">↑</span></a></div>
     </div>
   </section>
 </div>
@@ -154,6 +206,8 @@
       "default": "auto"
     },
     { "type": "checkbox", "id": "show_demo_videos", "label": "Show autoplay demo videos", "default": true },
+    { "type": "checkbox", "id": "show_pairing", "label": "Show Complete the routine cross-sell", "default": true },
+    { "type": "product_list", "id": "pair_products", "label": "Pair products (max 2 shown)" },
     { "type": "range", "id": "guarantee_days", "label": "Return promise (days)", "min": 14, "max": 60, "step": 1, "default": 30 }
   ],
   "presets": [{ "name": "PawKind product story" }]

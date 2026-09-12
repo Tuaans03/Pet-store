@@ -1,0 +1,54 @@
+{{ 'pawkind-store.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign set_product = section.settings.complete_set
+  assign set_price = section.settings.set_price_fallback
+  assign set_url = routes.all_products_collection_url
+  if set_product != blank
+    assign set_price = set_product.price | money_without_trailing_zeros
+    assign set_url = set_product.url
+  endif
+-%}
+
+<div class="pk-store" data-pk-store>
+  {% if section.settings.show_proofbar %}
+    <div class="pk-proofbar" aria-label="Key product benefits">
+      <div class="pk-shell pk-proofbar__grid">
+        <div>{% render 'pawkind-icon', icon: 'spark' %}<span><strong>No batteries</strong>Grab, roll, done</span></div>
+        <div>{% render 'pawkind-icon', icon: 'repeat' %}<span><strong>Endlessly reusable</strong>No paper refills</span></div>
+        <div>{% render 'pawkind-icon', icon: 'home' %}<span><strong>Whole-home clean</strong>Sofa, rug, bed & car</span></div>
+        <div>{% render 'pawkind-icon', icon: 'paw' %}<span><strong>Made for pet homes</strong>Dog and cat fur</span></div>
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="pk-shell">
+    <div class="pk-collection-banner">
+      <div>
+        <div class="pk-kicker"><span></span>{{ section.settings.eyebrow }}</div>
+        <p class="pk-collection-banner__text">{{ section.settings.text }}</p>
+      </div>
+      <a class="pk-button pk-button--primary" href="{{ set_url }}" data-pk-cta="collection_banner">Get the Set — {{ set_price }} <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .pk-collection-banner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px; margin: 26px 0 0; padding: 22px 26px; border: 1px solid var(--pk-line, rgba(31,45,38,.16)); border-radius: 20px; background: #f7f2e8; }
+  .pk-collection-banner__text { margin-top: 8px; font-weight: 700; font-size: 1.05rem; color: #1f2d26; }
+  .pk-collection-banner .pk-button { min-height: 52px; }
+</style>
+
+{% schema %}
+{
+  "name": "PawKind collection banner",
+  "settings": [
+    { "type": "product", "id": "complete_set", "label": "Bundle — Complete Cleaning Set" },
+    { "type": "text", "id": "set_price_fallback", "label": "Fallback set price", "default": "$29.99" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "PAWKIND ESSENTIALS" },
+    { "type": "text", "id": "text", "label": "Banner text", "default": "Two tools. Three ways to shop — best value in the Complete Set." },
+    { "type": "checkbox", "id": "show_proofbar", "label": "Show benefits proofbar", "default": true }
+  ],
+  "presets": [{ "name": "PawKind collection banner" }]
+}
+{% endschema %}
