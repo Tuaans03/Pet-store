@@ -1,0 +1,161 @@
+{{ 'pawkind-store.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'pawkind-store.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign page_kind = section.settings.product_kind
+  if page_kind == 'auto'
+    assign product_name = product.title | downcase
+    assign product_handle = product.handle | downcase
+    if product_name contains 'detail' or product_name contains 'portable' or product_handle contains 'detail' or product_handle contains 'brush'
+      assign page_kind = 'detail_brush'
+    elsif product_name contains 'complete' or product_name contains 'set' or product_name contains 'bundle' or product_handle contains 'complete' or product_handle contains 'bundle'
+      assign page_kind = 'complete_set'
+    else
+      assign page_kind = 'home_roller'
+    endif
+  endif
+-%}
+
+<div class="pk-store pk-product-story" data-pk-store data-product-kind="{{ page_kind }}">
+  <section class="pk-proofbar" aria-label="Purchase benefits">
+    <div class="pk-shell pk-proofbar__grid">
+      <div>{% render 'pawkind-icon', icon: 'repeat' %}<span><strong>Reusable design</strong>No sticky refills</span></div>
+      <div>{% render 'pawkind-icon', icon: 'spark' %}<span><strong>Quick daily reset</strong>No batteries needed</span></div>
+      <div>{% render 'pawkind-icon', icon: 'truck' %}<span><strong>Tracked delivery</strong>Follow every order</span></div>
+      <div>{% render 'pawkind-icon', icon: 'shield' %}<span><strong>{{ section.settings.guarantee_days }}-day promise</strong>Easy-return window</span></div>
+    </div>
+  </section>
+
+  {% if section.settings.show_demo_videos and page_kind != 'detail_brush' %}
+    <section class="pk-section pk-demo pk-product-videos" aria-labelledby="pk-product-videos-{{ section.id }}">
+      <div class="pk-shell">
+        <div class="pk-demo__copy pk-demo__copy--center">
+          <div class="pk-kicker pk-kicker--light"><span></span>See it in action</div>
+          <h2 id="pk-product-videos-{{ section.id }}">Scroll in. Watch it work.</h2>
+          <p>Each muted clip starts automatically when it enters the screen and pauses when you move on.</p>
+        </div>
+        <div class="pk-video-grid">
+          <article class="pk-video-card">
+            <video data-pk-autoplay muted loop playsinline preload="metadata" poster="{{ 'furkit-clip-chamber.jpg' | asset_url }}" aria-label="Collection chamber demonstration"><source src="{{ 'furkit-clip-chamber.mp4' | asset_url }}" type="video/mp4"></video>
+            <div><span>01</span><strong>Collection chamber</strong><small>Real product demo</small></div>
+          </article>
+          <article class="pk-video-card pk-video-card--featured">
+            <video data-pk-autoplay muted loop playsinline preload="metadata" poster="{{ 'furkit-clip-roll.jpg' | asset_url }}" aria-label="Rolling action demonstration"><source src="{{ 'furkit-clip-roll.mp4' | asset_url }}" type="video/mp4"></video>
+            <div><span>02</span><strong>Rolling action</strong><small>Real product demo</small></div>
+          </article>
+          <article class="pk-video-card">
+            <video data-pk-autoplay muted loop playsinline preload="metadata" poster="{{ 'furkit-clip-result.jpg' | asset_url }}" aria-label="Collected fur result"><source src="{{ 'furkit-clip-result.mp4' | asset_url }}" type="video/mp4"></video>
+            <div><span>03</span><strong>Collected result</strong><small>Real product demo</small></div>
+          </article>
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  {% case page_kind %}
+    {% when 'detail_brush' %}
+      <section class="pk-section pk-product-deep-dive">
+        <div class="pk-shell pk-split">
+          <div class="pk-product-deep-dive__image"><img src="{{ 'furkit-gallery-05.jpg' | asset_url }}" width="800" height="800" loading="lazy" alt="Portable pet hair detail brush used on clothing"></div>
+          <div class="pk-copy-block">
+            <div class="pk-kicker"><span></span>Made for the finishing pass</div>
+            <h2>Small enough to carry.<br>Ready when fur shows up.</h2>
+            <p>The Detail Brush gives clothes, bags, car interiors and tight corners a quick reusable touchup without peeling another sticky sheet.</p>
+            <div class="pk-benefit-list">
+              <article><strong>01</strong><div><h3>Swipe in the working direction</h3><p>Use light, steady passes to gather loose fur and lint.</p></div></article>
+              <article><strong>02</strong><div><h3>Clean the brush</h3><p>Use the built-in cleaning action to release collected hair.</p></div></article>
+              <article><strong>03</strong><div><h3>Pack it for later</h3><p>Keep it near the door, in a work bag or in the car.</p></div></article>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="pk-section pk-detail-gallery">
+        <div class="pk-shell">
+          <div class="pk-section-heading pk-section-heading--center"><div class="pk-kicker"><span></span>Designed for everyday touchups</div><h2>Clothes. Bags. Car seats. Done.</h2></div>
+          <div class="pk-detail-gallery__grid">
+            <img src="{{ 'furkit-gallery-01.jpg' | asset_url }}" width="800" height="800" loading="lazy" alt="Detail brush color options">
+            <img src="{{ 'furkit-gallery-04.jpg' | asset_url }}" width="800" height="800" loading="lazy" alt="Compact reusable detail brush">
+            <img src="{{ 'furkit-gallery-05.jpg' | asset_url }}" width="800" height="800" loading="lazy" alt="Detail brush removing hair from clothes">
+          </div>
+        </div>
+      </section>
+
+    {% when 'complete_set' %}
+      <section class="pk-section pk-product-deep-dive">
+        <div class="pk-shell pk-split">
+          <div class="pk-set-visual"><img src="{{ 'kit-detail-07.jpg' | asset_url }}" width="800" height="721" loading="lazy" alt="Full-size Home Roller"><img src="{{ 'furkit-gallery-04.jpg' | asset_url }}" width="800" height="800" loading="lazy" alt="Portable Detail Brush"></div>
+          <div class="pk-copy-block">
+            <div class="pk-kicker"><span></span>Complete Cleaning Set</div>
+            <h2>Broad surfaces.<br>Small details. Covered.</h2>
+            <p>The Home Roller handles sofas, rugs, bedding and car seats. The separate Detail Brush stays ready for clothes, bags and tight spaces.</p>
+            <div class="pk-benefit-list">
+              <article><strong>01</strong><div><h3>Home Roller</h3><p>A wide two-way head with an easy-empty collection chamber.</p></div></article>
+              <article><strong>02</strong><div><h3>Detail Brush</h3><p>A compact reusable tool for quick touchups away from the couch.</p></div></article>
+              <article><strong>03</strong><div><h3>One complete routine</h3><p>Keep the right tool close to every place pet hair gathers.</p></div></article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    {% else %}
+      <section class="pk-section pk-product-deep-dive">
+        <div class="pk-shell pk-split">
+          <div class="pk-product-deep-dive__image"><img src="{{ 'kit-detail-02.jpg' | asset_url }}" width="800" height="1339" loading="lazy" alt="Home Roller easy-empty collection chamber"></div>
+          <div class="pk-copy-block">
+            <div class="pk-kicker"><span></span>Built for repeat cleanup</div>
+            <h2>Fur goes in.<br>Your hands stay out.</h2>
+            <p>The wide roller gathers fur with each back-and-forth pass. Its internal cleaning system moves collected hair into a compartment you can open and empty in seconds.</p>
+            <div class="pk-benefit-list">
+              <article><strong>01</strong><div><h3>Roll both directions</h3><p>Use steady, short strokes instead of pressing hard.</p></div></article>
+              <article><strong>02</strong><div><h3>Open the chamber</h3><p>Release the collected fur over a trash bin.</p></div></article>
+              <article><strong>03</strong><div><h3>Store within reach</h3><p>The hanging loop keeps the tool ready for the next quick reset.</p></div></article>
+            </div>
+          </div>
+        </div>
+      </section>
+  {% endcase %}
+
+  <section class="pk-section pk-care-guide">
+    <div class="pk-shell">
+      <div class="pk-section-heading pk-section-heading--center">
+        <div class="pk-kicker"><span></span>Use it with care</div>
+        <h2>Start gentle.<br>Let the tool do the work.</h2>
+      </div>
+      <div class="pk-care-guide__grid">
+        <article><span>GOOD FOR</span><h3>Most non-knitted fabrics</h3><p>Upholstery, bedding, flat-weave rugs, car interiors and everyday clothing.</p></article>
+        <article><span>TEST FIRST</span><h3>Hidden area check</h3><p>Materials vary. Try a light pass on an unseen area before cleaning a full surface.</p></article>
+        <article><span>AVOID</span><h3>Delicate or looped textiles</h3><p>Do not use on cashmere, loose knits, delicate weaves or looped/Berber carpet.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="pk-final">
+    <div class="pk-shell pk-final__inner">
+      <div><div class="pk-kicker pk-kicker--light"><span></span>Ready for a cleaner reset?</div><h2>{% if page_kind == 'detail_brush' %}Touch up.<br>Head out.{% elsif page_kind == 'complete_set' %}Two tools.<br>One calmer home.{% else %}Roll. Empty.<br>Reuse.{% endif %}</h2></div>
+      <div><p>Your product gallery, price, options and checkout controls are waiting at the top of this page.</p><a class="pk-button pk-button--cream" href="#MainProduct">Back to buy <span aria-hidden="true">↑</span></a></div>
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "PawKind product story",
+  "settings": [
+    {
+      "type": "select",
+      "id": "product_kind",
+      "label": "Product page type",
+      "options": [
+        { "value": "auto", "label": "Auto-detect from title" },
+        { "value": "home_roller", "label": "Home Roller" },
+        { "value": "detail_brush", "label": "Detail Brush" },
+        { "value": "complete_set", "label": "Complete Cleaning Set" }
+      ],
+      "default": "auto"
+    },
+    { "type": "checkbox", "id": "show_demo_videos", "label": "Show autoplay demo videos", "default": true },
+    { "type": "range", "id": "guarantee_days", "label": "Return promise (days)", "min": 14, "max": 60, "step": 1, "default": 30 }
+  ],
+  "presets": [{ "name": "PawKind product story" }]
+}
+{% endschema %}

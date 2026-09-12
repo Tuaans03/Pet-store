@@ -1,0 +1,26 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ * This file may be updated by the Shopify theme editor.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "pawkind_store": {
+      "type": "pawkind-store",
+      "settings": {
+        "home_roller": "furlift-home-roller",
+        "detail_brush": "furlift-detail-brush",
+        "complete_set": "complete-cleaning-set",
+        "eyebrow": "TWO TOOLS. TWO DIFFERENT JOBS.",
+        "heading": "Pet hair is part of life. It doesn’t have to stay on everything.",
+        "subheading": "Choose the full-size Home Roller for furniture, the portable Detail Brush for clothes, or pair both in the Complete Cleaning Set.",
+        "home_roller_price": "$19.99",
+        "detail_brush_price": "$14.99",
+        "complete_set_price": "$29.99",
+        "guarantee_days": 30
+      }
+    }
+  },
+  "order": ["pawkind_store"]
+}
