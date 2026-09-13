@@ -19,14 +19,27 @@
 {% liquid
   assign widths = widths | default: '240, 352, 832, 1200, 1600, 1920, 2560, 3840'
   assign ref_image_to_transition = ''
+  assign media_natural_width = media.preview_image.width | default: media.width | default: 1200
+  assign media_natural_height = media.preview_image.height | default: media.height | default: 1200
+  assign media_largest_edge = media_natural_width
+
+  if media_natural_height > media_largest_edge
+    assign media_largest_edge = media_natural_height
+  endif
+
+  assign resolution_class = ''
+  if media_largest_edge < 900
+    assign resolution_class = ' product-media--low-resolution'
+  endif
+
   if settings.transition_to_main_product
     assign ref_image_to_transition = 'imagesToTransition[]'
   endif
 %}
 
 <div
-  class="product-media"
-  style="--ratio: {{ media.aspect_ratio }}"
+  class="product-media{{ resolution_class }}"
+  style="--ratio: {{ media.aspect_ratio }}; --media-natural-width: {{ media_natural_width }}px; --media-natural-height: {{ media_natural_height }}px;"
   data-media-id="{{ media.id }}"
 >
   {% liquid

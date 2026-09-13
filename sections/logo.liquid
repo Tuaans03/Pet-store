@@ -3,6 +3,7 @@
 {% liquid
   assign section_settings = section.settings
   assign image = settings.logo
+  assign storefront_name = settings.brand_name | default: shop.name
 
   if section_settings.inverse and settings.logo_inverse
     assign image = settings.logo_inverse
@@ -23,7 +24,7 @@
         widths: '240, 352, 832, 1200, 1600, 1920, 2560, 3840',
         height: image.height,
         class: 'logo-section__image',
-        alt: shop.name,
+        alt: storefront_name,
         sizes: '(min-width: 750px) calc(var(--logo-width)), 100vw'
     -}}
   {% endcapture %}
@@ -48,7 +49,7 @@
         {% if image %}
           --logo-width: {{ image.width | times: 1.00 | divided_by: image.height | times: section_settings.pixel_height }}px;
         {% else %}
-          --logo-width: {{ shop.name.size | times: 0.65 }}em;
+          --logo-width: {{ storefront_name.size | times: 0.65 }}em;
           --logo-height: {{ section_settings.pixel_height }}px;
         {% endif %}
       {% endif %}
@@ -61,7 +62,7 @@
           {% if image %}
             --logo-width-mobile: {{ image.width | times: 1.00 | divided_by: image.height | times: section_settings.pixel_height_mobile }}px;
             {% else %}
-              --logo-width-mobile: {{ shop.name.size | times: 0.65 }}em;
+              --logo-width-mobile: {{ storefront_name.size | times: 0.65 }}em;
               --logo-height-mobile: {{ section_settings.pixel_height_mobile }}px;
           {% endif %}
         {% endif %}
@@ -75,7 +76,7 @@
         {{ logo_image }}
       </div>
     {% else %}
-      {% render 'jumbo-text', text: shop.name, block_settings: section.settings %}
+      {% render 'jumbo-text', text: storefront_name, block_settings: section.settings %}
     {% endif %}
   </div>
 </div>

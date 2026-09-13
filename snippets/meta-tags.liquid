@@ -15,14 +15,20 @@
 >
 <meta
   name="theme-color"
-  content=""
+  content="#173f32"
 >
 
 {%- liquid
-  assign og_title = page_title | default: shop.name
+  assign storefront_name = settings.brand_name | default: shop.name
+  assign title_text = page_title | default: storefront_name
+  if title_text == shop.name
+    assign title_text = storefront_name
+  endif
+
+  assign og_title = title_text | default: storefront_name
   assign og_url = canonical_url | default: request.origin
   assign og_type = 'website'
-  assign og_description = page_description | default: shop.description | default: shop.name
+  assign og_description = page_description | default: shop.description | default: storefront_name
 
   if request.page_type == 'product'
     assign og_type = 'product'
@@ -35,7 +41,7 @@
 
 <meta
   property="og:site_name"
-  content="{{ shop.name }}"
+  content="{{ storefront_name }}"
 >
 <meta
   property="og:url"
@@ -104,10 +110,10 @@
 >
 
 <title>
-  {{ page_title }}
+  {{ title_text }}
   {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
   {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
-  {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+  {%- unless title_text contains storefront_name %} &ndash; {{ storefront_name }}{% endunless -%}
 </title>
 
 <link

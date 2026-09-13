@@ -56,14 +56,23 @@
     class="header-logo__image-container header-logo__image-container--original"
     data-testid="header-logo"
   >
-    {% render 'image',
-      image: settings.logo,
-      class: 'header-logo__image',
-      height: settings.logo_height,
-      alt_text_fallback: alt_text_fallback,
-      text_fallback: brand_name,
-      style: logo_style
-    %}
+    {% if settings.logo != blank %}
+      {% render 'image',
+        image: settings.logo,
+        class: 'header-logo__image',
+        height: settings.logo_height,
+        alt_text_fallback: alt_text_fallback,
+        text_fallback: brand_name,
+        style: logo_style
+      %}
+    {% else %}
+      <span class="daemy-wordmark" aria-label="{{ brand_name | escape }}">
+        <span class="daemy-wordmark__mark" aria-hidden="true">
+          <span class="daemy-wordmark__leaf"></span>
+        </span>
+        <span class="daemy-wordmark__text">{{ brand_name }}</span>
+      </span>
+    {% endif %}
   </span>
 
   {% if use_inverse_logo %}
@@ -88,8 +97,8 @@
     display: flex;
     height: 100%;
     font-size: var(--font-size--md);
-    font-family: var(--font-family);
-    font-weight: var(--font-weight);
+    font-family: var(--font-heading--family);
+    font-weight: 800;
     font-style: var(--font-style);
     color: var(--color-foreground);
     justify-content: center;
@@ -119,6 +128,77 @@
     &:hover {
       text-decoration: none;
     }
+  }
+
+  .daemy-wordmark {
+    --daemy-ink: #173f32;
+    --daemy-mint: #dfeada;
+    --daemy-leaf: #80a867;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-height: 2.25rem;
+    color: var(--daemy-ink);
+    line-height: 1;
+  }
+
+  .daemy-wordmark__mark {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    width: 2.15rem;
+    height: 2.15rem;
+    flex: 0 0 2.15rem;
+    border: 1px solid rgba(23, 63, 50, 0.16);
+    border-radius: 50% 50% 50% 22%;
+    background:
+      radial-gradient(circle at 64% 30%, rgba(255, 255, 255, 0.92) 0 0.18rem, transparent 0.2rem),
+      linear-gradient(135deg, #f7f2e8 0%, var(--daemy-mint) 62%, #cfe0c9 100%);
+    box-shadow: 0 0.45rem 1.2rem rgba(23, 63, 50, 0.12);
+  }
+
+  .daemy-wordmark__mark::before {
+    content: 'D';
+    margin-top: -0.05rem;
+    font-family: var(--font-heading--family);
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: var(--daemy-ink);
+  }
+
+  .daemy-wordmark__leaf {
+    position: absolute;
+    right: -0.1rem;
+    bottom: 0.18rem;
+    width: 0.55rem;
+    height: 0.78rem;
+    border-radius: 0.55rem 0.55rem 0.55rem 0;
+    background: var(--daemy-leaf);
+    transform: rotate(42deg);
+    box-shadow: inset 0.08rem 0.08rem 0 rgba(255, 255, 255, 0.36);
+  }
+
+  .daemy-wordmark__text {
+    font-size: 1.32rem;
+    font-weight: 850;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  @media screen and (min-width: 750px) {
+    .daemy-wordmark__text {
+      font-size: 1.48rem;
+    }
+  }
+
+  .header-logo:hover .daemy-wordmark__mark {
+    transform: translateY(-1px);
+    box-shadow: 0 0.55rem 1.35rem rgba(23, 63, 50, 0.16);
+  }
+
+  header-component[transparent] .daemy-wordmark {
+    --daemy-ink: currentColor;
+    --daemy-mint: rgba(255, 255, 255, 0.82);
   }
 
   .header-logo__image {

@@ -30,7 +30,7 @@
   endif
 -%}
 
-<div class="pk-store" id="PawKindStore-{{ section.id }}" data-pk-store data-pk-analytics="{% if section.settings.enable_analytics %}1{% else %}0{% endif %}">
+<div class="pk-store" id="DaemyStore-{{ section.id }}" data-pk-store data-pk-analytics="{% if section.settings.enable_analytics %}1{% else %}0{% endif %}">
   <section class="pk-hero" aria-labelledby="pk-hero-heading-{{ section.id }}">
     <div class="pk-shell pk-hero__grid">
       <div class="pk-hero__copy">
@@ -61,7 +61,7 @@
         </div>
       </div>
 
-      <div class="pk-hero__visual" role="img" aria-label="Two PawKind pet hair removal tools">
+      <div class="pk-hero__visual" role="img" aria-label="Two Daemy pet hair removal tools">
         <div class="pk-hero__blob" aria-hidden="true"></div>
         <figure class="pk-product-shot pk-product-shot--main">
           <img src="{{ 'kit-detail-07.jpg' | asset_url }}" width="800" height="721" alt="Full-size reusable pet hair roller with self-cleaning chamber" fetchpriority="high" decoding="async">
@@ -87,7 +87,7 @@
   <section class="pk-section pk-shop" id="pk-shop-{{ section.id }}" aria-labelledby="pk-shop-heading-{{ section.id }}">
     <div class="pk-shell">
       <div class="pk-section-heading pk-section-heading--center pk-shop__heading">
-        <div class="pk-kicker"><span></span>Shop all PawKind essentials</div>
+        <div class="pk-kicker"><span></span>Shop all Daemy essentials</div>
         <h2 id="pk-shop-heading-{{ section.id }}">Two tools. Three ways to shop.</h2>
         <p>Choose the Home Roller, the portable Detail Brush, or bring both home in the Complete Cleaning Set.</p>
       </div>
@@ -411,7 +411,7 @@
         <p class="pk-compare__sub">One-time {% if complete_set != blank %}{{ complete_set.price | money_without_trailing_zeros }}{% else %}{{ section.settings.complete_set_price }}{% endif %} set vs endless refills. No batteries, no waste.</p>
       </div>
       <div class="pk-compare__table" role="table" aria-label="Comparison of pet hair tools">
-        <div class="pk-compare__row pk-compare__row--head" role="row"><span></span><strong>PawKind</strong><span>Sticky roller</span></div>
+        <div class="pk-compare__row pk-compare__row--head" role="row"><span></span><strong>Daemy</strong><span>Sticky roller</span></div>
         <div class="pk-compare__row" role="row"><span>Reusable, no refills</span><strong>✓</strong><span>✕</span></div>
         <div class="pk-compare__row" role="row"><span>Self-clean chamber</span><strong>✓</strong><span>✕</span></div>
         <div class="pk-compare__row" role="row"><span>Works both directions</span><strong>✓</strong><span>✕</span></div>
@@ -457,9 +457,9 @@
   "@graph": [
     {
       "@type": "Product",
-      "name": "PawKind Complete Cleaning Set",
+      "name": "Daemy Complete Cleaning Set",
       "description": "Reusable Home Roller + Detail Brush for pet hair. No refills, no batteries.",
-      "brand": { "@type": "Brand", "name": "PawKind" },
+      "brand": { "@type": "Brand", "name": "Daemy" },
       "offers": { "@type": "Offer", "priceCurrency": "{{ cart.currency.iso_code | default: 'USD' }}", "price": "{{ set_price_cents | divided_by: 100.0 }}", "availability": "https://schema.org/InStock" }{% if section.settings.use_placeholder_proof %},
       "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "reviewCount": "2314" }{% endif %}
     },
@@ -485,7 +485,7 @@
 
 {% schema %}
 {
-  "name": "PawKind two-product store",
+  "name": "Daemy two-product store",
   "settings": [
     { "type": "product", "id": "home_roller", "label": "Product 1 — Home Roller" },
     { "type": "product", "id": "detail_brush", "label": "Product 2 — Detail Brush" },
@@ -511,6 +511,6 @@
     { "type": "checkbox", "id": "single_open_faq", "label": "FAQ single-open accordion", "default": true },
     { "type": "checkbox", "id": "enable_analytics", "label": "Enable dataLayer analytics events", "default": true }
   ],
-  "presets": [{ "name": "PawKind two-product store" }]
+  "presets": [{ "name": "Daemy two-product store" }]
 }
 {% endschema %}

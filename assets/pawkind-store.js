@@ -1,4 +1,4 @@
-class PawKindStore {
+class DaemyStore {
   constructor(root) {
     this.root = root;
     this.live = root.querySelector('[data-pk-live]');
@@ -453,13 +453,13 @@ class PawKindStore {
   }
 }
 
-(function dedupePawKindCss() {
+(function dedupeDaemyCss() {
   const links = [...document.querySelectorAll('link[href*="pawkind-store.css"]')];
   links.slice(1).forEach((l) => l.remove());
 })();
 
-document.querySelectorAll('[data-pk-store]').forEach((root) => new PawKindStore(root));
+document.querySelectorAll('[data-pk-store]').forEach((root) => new DaemyStore(root));
 
 document.addEventListener('shopify:section:load', (event) => {
-  event.target.querySelectorAll('[data-pk-store]').forEach((root) => new PawKindStore(root));
+  event.target.querySelectorAll('[data-pk-store]').forEach((root) => new DaemyStore(root));
 });

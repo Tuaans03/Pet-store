@@ -160,7 +160,7 @@
           {% endif %}
         {% endfor %}
         {% if pair_count == 0 %}
-          <p class="pk-pairing__empty">Pick 2 cross-sell products in Theme Editor → PawKind product story → Pair products.</p>
+          <p class="pk-pairing__empty">Pick 2 cross-sell products in Theme Editor → Daemy product story → Pair products.</p>
         {% endif %}
       </div>
     </div>
@@ -191,7 +191,7 @@
 
 {% schema %}
 {
-  "name": "PawKind product story",
+  "name": "Daemy product story",
   "settings": [
     {
       "type": "select",
@@ -210,6 +210,6 @@
     { "type": "product_list", "id": "pair_products", "label": "Pair products (max 2 shown)" },
     { "type": "range", "id": "guarantee_days", "label": "Return promise (days)", "min": 14, "max": 60, "step": 1, "default": 30 }
   ],
-  "presets": [{ "name": "PawKind product story" }]
+  "presets": [{ "name": "Daemy product story" }]
 }
 {% endschema %}

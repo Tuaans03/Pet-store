@@ -82,7 +82,7 @@
 
     /* 3 blocks: Three columns (1fr auto 1fr), start/center/end aligned */
     .utilities--blocks-3 {
-      grid-template-columns: 1fr auto 1fr;
+      grid-template-columns: minmax(12rem, auto) minmax(0, 1fr) minmax(12rem, auto);
     }
 
     .utilities--blocks-3 > *:nth-child(2) {
@@ -201,12 +201,9 @@
         },
         "policy_list": {
           "type": "footer-policy-list"
-        },
-        "social_icons": {
-          "type": "social-links"
         }
       },
-      "block_order": ["copyright", "policy_list", "social_icons"]
+      "block_order": ["copyright", "policy_list"]
     }
   ]
 }
