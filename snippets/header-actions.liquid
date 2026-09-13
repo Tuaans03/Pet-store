@@ -113,6 +113,14 @@
     </div>
   {% endif %}
 
+  <a
+    href="{{ routes.all_products_collection_url }}"
+    class="header-actions__pawkind-cta"
+    data-pk-cta="header"
+  >
+    Get the Set
+  </a>
+
   {% if settings.cart_type == 'drawer' and template.name != 'cart' %}
     <button
       class="header-actions__action button-unstyled{% if display_style == 'text' %} header-actions__text-style{% endif %}"
@@ -209,6 +217,35 @@
 
   .account-button--text shopify-account {
     color: inherit;
+  }
+
+  .header-actions__pawkind-cta {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 20px;
+    border-radius: 999px;
+    background: #173f32;
+    color: #fffdf8;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .header-actions__pawkind-cta:hover {
+    background: #235b47;
+  }
+
+  .header-actions__pawkind-cta:focus-visible {
+    outline: 3px solid #2f684f;
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 800px) {
+    .header-actions__pawkind-cta {
+      display: none;
+    }
   }
 
   .cart-actions summary {

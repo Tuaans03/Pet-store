@@ -8,6 +8,12 @@
  * ------------------------------------------------------------
  */{
   "sections": {
+    "pawkind_banner": {
+      "type": "pawkind-collection-banner",
+      "settings": {
+        "show_proofbar": true
+      }
+    },
     "section": {
       "type": "section",
       "blocks": {
@@ -216,6 +222,7 @@
     }
   },
   "order": [
+    "pawkind_banner",
     "section",
     "main"
   ]

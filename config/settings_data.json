@@ -9,7 +9,7 @@
  */
 {
   "current": {
-    "brand_name": "PawKind",
+    "brand_name": "Daemy",
     "logo_height": 36,
     "logo_height_mobile": 28,
     "page_background_color": "{{ settings.color_palette.background }}",

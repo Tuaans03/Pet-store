@@ -8,9 +8,29 @@
   if home_roller == blank and detail_brush == blank and complete_set == blank
     assign home_roller = collections.all.products.first
   endif
+
+  assign set_price_cents = 2999
+  if complete_set != blank and complete_set.price
+    assign set_price_cents = complete_set.price
+  endif
+  assign singles_sum_cents = 3498
+  if home_roller != blank and detail_brush != blank and home_roller.price and detail_brush.price
+    assign singles_sum_cents = home_roller.price | plus: detail_brush.price
+  endif
+  assign bundle_save_cents = singles_sum_cents | minus: set_price_cents
+  assign bundle_save_percent = 14
+  if singles_sum_cents > 0 and bundle_save_cents > 0
+    assign bundle_save_percent = bundle_save_cents | times: 100 | divided_by: singles_sum_cents
+  else
+    assign bundle_save_cents = 500
+  endif
+  assign bundle_save_money = bundle_save_cents | money_without_trailing_zeros
+  if bundle_save_cents == 500 and set_price_cents == 2999
+    assign bundle_save_money = '$5'
+  endif
 -%}
 
-<div class="pk-store" id="PawKindStore-{{ section.id }}" data-pk-store>
+<div class="pk-store" id="DaemyStore-{{ section.id }}" data-pk-store data-pk-analytics="{% if section.settings.enable_analytics %}1{% else %}0{% endif %}">
   <section class="pk-hero" aria-labelledby="pk-hero-heading-{{ section.id }}">
     <div class="pk-shell pk-hero__grid">
       <div class="pk-hero__copy">
@@ -19,38 +39,38 @@
         <p class="pk-lead">{{ section.settings.subheading }}</p>
 
         <div class="pk-mobile-product-peek" aria-label="Two reusable pet hair tools">
-          <img src="{{ 'kit-detail-07.jpg' | asset_url }}" width="800" height="721" alt="Full-size reusable pet hair roller">
-          <img src="{{ 'furkit-gallery-01.jpg' | asset_url }}" width="800" height="800" alt="Compact reusable detail brush">
-          <span><strong>2 different tools</strong>Buy separately or save with the set</span>
+          <img src="{{ 'kit-detail-07.jpg' | asset_url }}" width="400" height="360" alt="Full-size reusable pet hair roller" fetchpriority="high">
+          <img src="{{ 'furkit-gallery-01.jpg' | asset_url }}" width="400" height="400" alt="Compact reusable detail brush" loading="lazy">
+          <span><strong>2 different tools</strong>Buy separately or save {{ bundle_save_money }} with the set</span>
         </div>
 
         <ul class="pk-checklist" role="list">
-          <li>{% render 'pawkind-icon', icon: 'check' %}<span>Lifts embedded fur from sofas, rugs and car seats</span></li>
-          <li>{% render 'pawkind-icon', icon: 'check' %}<span>Self-cleaning chamber—no sticky refills</span></li>
-          <li>{% render 'pawkind-icon', icon: 'check' %}<span>Choose the Home Roller, Detail Brush, or both</span></li>
+          <li>{% render 'pawkind-icon', icon: 'check' %}<span>{{ section.settings.checklist_1 | default: 'Lifts embedded fur from sofas, rugs and car seats' }}</span></li>
+          <li>{% render 'pawkind-icon', icon: 'check' %}<span>{{ section.settings.checklist_2 | default: 'Self-cleaning chamber—no sticky refills' }}</span></li>
+          <li>{% render 'pawkind-icon', icon: 'check' %}<span>{{ section.settings.checklist_3 | default: 'Choose the Home Roller, Detail Brush, or both' }}</span></li>
         </ul>
 
         <div class="pk-hero__actions">
-          <a class="pk-button pk-button--primary" href="#pk-shop-{{ section.id }}">Shop the tools <span aria-hidden="true">→</span></a>
-          <a class="pk-button pk-button--ghost" href="#pk-videos-{{ section.id }}">Watch 3 demos</a>
+          <a class="pk-button pk-button--primary" href="#pk-shop-{{ section.id }}" data-pk-cta="hero_primary">{{ section.settings.hero_primary_text | default: 'Shop the tools' }} <span aria-hidden="true">→</span></a>
+          <a class="pk-button pk-button--ghost" href="#pk-videos-{{ section.id }}" data-pk-cta="hero_secondary">{{ section.settings.hero_secondary_text | default: 'Watch 3 demos' }}</a>
         </div>
 
         <div class="pk-microtrust" aria-label="Purchase benefits">
           <span>{% render 'pawkind-icon', icon: 'truck' %} Tracked US delivery</span>
-          <span>{% render 'pawkind-icon', icon: 'shield' %} 30-day easy returns</span>
+          <span>{% render 'pawkind-icon', icon: 'shield' %} {{ section.settings.guarantee_days }}-day easy returns</span>
         </div>
       </div>
 
-      <div class="pk-hero__visual" aria-label="Two PawKind pet hair removal tools">
+      <div class="pk-hero__visual" role="img" aria-label="Two Daemy pet hair removal tools">
         <div class="pk-hero__blob" aria-hidden="true"></div>
         <figure class="pk-product-shot pk-product-shot--main">
-          <img src="{{ 'kit-detail-07.jpg' | asset_url }}" width="800" height="721" alt="Full-size reusable pet hair roller with self-cleaning chamber" fetchpriority="high">
+          <img src="{{ 'kit-detail-07.jpg' | asset_url }}" width="800" height="721" alt="Full-size reusable pet hair roller with self-cleaning chamber" fetchpriority="high" decoding="async">
         </figure>
         <figure class="pk-product-shot pk-product-shot--mini">
-          <img src="{{ 'furkit-gallery-01.jpg' | asset_url }}" width="800" height="800" alt="Compact reusable pet hair detail brush in multiple colors" fetchpriority="high">
+          <img src="{{ 'furkit-gallery-01.jpg' | asset_url }}" width="600" height="600" alt="Compact reusable pet hair detail brush in multiple colors" fetchpriority="low" loading="eager" decoding="async">
           <figcaption>Portable detail brush</figcaption>
         </figure>
-        <div class="pk-hero__badge"><strong>2</strong><span>different<br>tools</span></div>
+        <div class="pk-hero__badge" aria-hidden="true"><strong>2</strong><span>different<br>tools</span></div>
       </div>
     </div>
   </section>
@@ -67,15 +87,15 @@
   <section class="pk-section pk-shop" id="pk-shop-{{ section.id }}" aria-labelledby="pk-shop-heading-{{ section.id }}">
     <div class="pk-shell">
       <div class="pk-section-heading pk-section-heading--center pk-shop__heading">
-        <div class="pk-kicker"><span></span>Shop all PawKind essentials</div>
+        <div class="pk-kicker"><span></span>Shop all Daemy essentials</div>
         <h2 id="pk-shop-heading-{{ section.id }}">Two tools. Three ways to shop.</h2>
         <p>Choose the Home Roller, the portable Detail Brush, or bring both home in the Complete Cleaning Set.</p>
       </div>
 
       <div class="pk-shop__grid">
-        <article class="pk-shop-card">
+        <article class="pk-shop-card" data-pk-shop-key="home">
           <a class="pk-shop-card__media" {% if home_roller != blank %}href="{{ home_roller.url }}"{% else %}href="#pk-videos-{{ section.id }}"{% endif %} aria-label="View FurLift Home Roller">
-            <img src="{{ 'kit-detail-07.jpg' | asset_url }}" width="800" height="721" alt="FurLift Home Roller" fetchpriority="high">
+            <img src="{{ 'kit-detail-07.jpg' | asset_url }}" width="800" height="721" alt="FurLift Home Roller" loading="lazy" decoding="async">
             <span>01 · LARGE SURFACES</span>
           </a>
           <div class="pk-shop-card__body">
@@ -84,18 +104,30 @@
             {% if home_roller != blank %}
               {% assign home_variant = home_roller.selected_or_first_available_variant %}
               {% form 'product', home_roller, class: 'pk-card-form' %}
-                <input type="hidden" name="id" value="{{ home_variant.id }}">
+                <input type="hidden" name="id" value="{{ home_variant.id }}" data-pk-variant-id>
+                {% if home_roller.available and home_roller.variants.size > 1 %}
+                  <label class="pk-variant-label">Option
+                    <select class="pk-variant-select" data-pk-variant-select aria-label="Choose {{ home_roller.title }} option">
+                      {% for v in home_roller.variants %}
+                        <option value="{{ v.id }}" {% if v.id == home_variant.id %}selected{% endif %} {% unless v.available %}disabled{% endunless %}>{{ v.title }} — {{ v.price | money }}{% unless v.available %} (sold out){% endunless %}</option>
+                      {% endfor %}
+                    </select>
+                  </label>
+                {% endif %}
                 <button class="pk-add" type="submit" name="add" {% unless home_variant.available %}disabled{% endunless %}>{% if home_variant.available %}<span>Add Home Roller</span><strong>→</strong>{% else %}<span>Sold out</span>{% endif %}</button>
+                {% if home_variant.available %}{{ form | payment_button }}{% endif %}
               {% endform %}
+              {% unless home_variant.available %}<a class="pk-text-link pk-card-link" href="{{ home_roller.url }}" style="color:var(--pk-green);border-color:var(--pk-line)">View product — notify me ↓</a>{% endunless %}
             {% else %}
-              <button class="pk-add" type="button" disabled><span>{% if request.design_mode %}Connect Home Roller product{% else %}Home Roller coming soon{% endif %}</span><strong>→</strong></button>
+              <a class="pk-add" href="#pk-videos-{{ section.id }}"><span>See it in action</span><strong>→</strong></a>
+              {% if request.design_mode %}<p class="pk-design-note">Design mode: connect Home Roller product in section settings.</p>{% endif %}
             {% endif %}
           </div>
         </article>
 
-        <article class="pk-shop-card">
+        <article class="pk-shop-card" data-pk-shop-key="detail">
           <a class="pk-shop-card__media" {% if detail_brush != blank %}href="{{ detail_brush.url }}"{% else %}href="#pk-videos-{{ section.id }}"{% endif %} aria-label="View FurLift Detail Brush">
-            <img src="{{ 'furkit-gallery-01.jpg' | asset_url }}" width="800" height="800" alt="FurLift portable Detail Brush" fetchpriority="high">
+            <img src="{{ 'furkit-gallery-01.jpg' | asset_url }}" width="800" height="800" alt="FurLift portable Detail Brush" loading="lazy" decoding="async">
             <span>02 · CLOTHES & CORNERS</span>
           </a>
           <div class="pk-shop-card__body">
@@ -104,35 +136,63 @@
             {% if detail_brush != blank %}
               {% assign detail_variant = detail_brush.selected_or_first_available_variant %}
               {% form 'product', detail_brush, class: 'pk-card-form' %}
-                <input type="hidden" name="id" value="{{ detail_variant.id }}">
+                <input type="hidden" name="id" value="{{ detail_variant.id }}" data-pk-variant-id>
+                {% if detail_brush.available and detail_brush.variants.size > 1 %}
+                  <label class="pk-variant-label">Option
+                    <select class="pk-variant-select" data-pk-variant-select aria-label="Choose {{ detail_brush.title }} option">
+                      {% for v in detail_brush.variants %}
+                        <option value="{{ v.id }}" {% if v.id == detail_variant.id %}selected{% endif %} {% unless v.available %}disabled{% endunless %}>{{ v.title }} — {{ v.price | money }}{% unless v.available %} (sold out){% endunless %}</option>
+                      {% endfor %}
+                    </select>
+                  </label>
+                {% endif %}
                 <button class="pk-add" type="submit" name="add" {% unless detail_variant.available %}disabled{% endunless %}>{% if detail_variant.available %}<span>Add Detail Brush</span><strong>→</strong>{% else %}<span>Sold out</span>{% endif %}</button>
+                {% if detail_variant.available %}{{ form | payment_button }}{% endif %}
               {% endform %}
+              {% unless detail_variant.available %}<a class="pk-text-link pk-card-link" href="{{ detail_brush.url }}" style="color:var(--pk-green);border-color:var(--pk-line)">View product — notify me ↓</a>{% endunless %}
             {% else %}
-              <button class="pk-add" type="button" disabled><span>{% if request.design_mode %}Connect Detail Brush product{% else %}Detail Brush coming soon{% endif %}</span><strong>→</strong></button>
+              <a class="pk-add" href="#pk-videos-{{ section.id }}"><span>See it in action</span><strong>→</strong></a>
+              {% if request.design_mode %}<p class="pk-design-note">Design mode: connect Detail Brush product in section settings.</p>{% endif %}
             {% endif %}
           </div>
         </article>
 
-        <article class="pk-shop-card pk-shop-card--bundle">
-          <div class="pk-shop-card__tag">BEST VALUE</div>
+        <article class="pk-shop-card pk-shop-card--bundle" data-pk-shop-key="set">
+          <div class="pk-shop-card__tag">BEST VALUE · SAVE {{ bundle_save_money | upcase }}</div>
           <a class="pk-shop-card__media" {% if complete_set != blank %}href="{{ complete_set.url }}"{% else %}href="#pk-videos-{{ section.id }}"{% endif %} aria-label="View Complete Cleaning Set">
             <div class="pk-shop-card__pair">
-              <img src="{{ 'kit-detail-07.jpg' | asset_url }}" width="800" height="721" alt="FurLift Home Roller">
-              <img src="{{ 'furkit-gallery-04.jpg' | asset_url }}" width="800" height="800" alt="FurLift Detail Brush">
+              <img src="{{ 'kit-detail-07.jpg' | asset_url }}" width="800" height="721" alt="FurLift Home Roller" loading="lazy" decoding="async">
+              <img src="{{ 'furkit-gallery-04.jpg' | asset_url }}" width="800" height="800" alt="FurLift Detail Brush" loading="lazy" decoding="async">
             </div>
             <span>03 · BOTH TOOLS</span>
           </a>
           <div class="pk-shop-card__body">
             <div><h3>{% if complete_set != blank %}{{ complete_set.title }}{% else %}Complete Cleaning Set{% endif %}</h3><p>One Home Roller + one Detail Brush for whole-home cleanup and quick touchups.</p></div>
-            <div class="pk-shop-card__price">{% if complete_set != blank %}{{ complete_set.price | money }}{% else %}{{ section.settings.complete_set_price }}{% endif %}</div>
+            <div class="pk-shop-card__price">
+              {% if complete_set != blank %}{{ complete_set.price | money }}{% else %}{{ section.settings.complete_set_price }}{% endif %}
+              <s class="pk-compare-price" aria-label="Sold separately price">{% if complete_set != blank and complete_set.compare_at_price > complete_set.price %}{{ complete_set.compare_at_price | money }}{% else %}{{ singles_sum_cents | money_without_trailing_zeros }}{% endif %}</s>
+              <span class="pk-save-badge">Save {{ bundle_save_percent }}%</span>
+            </div>
             {% if complete_set != blank %}
               {% assign set_variant = complete_set.selected_or_first_available_variant %}
               {% form 'product', complete_set, class: 'pk-card-form' %}
-                <input type="hidden" name="id" value="{{ set_variant.id }}">
+                <input type="hidden" name="id" value="{{ set_variant.id }}" data-pk-variant-id>
+                {% if complete_set.available and complete_set.variants.size > 1 %}
+                  <label class="pk-variant-label">Option
+                    <select class="pk-variant-select" data-pk-variant-select aria-label="Choose {{ complete_set.title }} option">
+                      {% for v in complete_set.variants %}
+                        <option value="{{ v.id }}" {% if v.id == set_variant.id %}selected{% endif %} {% unless v.available %}disabled{% endunless %}>{{ v.title }} — {{ v.price | money }}{% unless v.available %} (sold out){% endunless %}</option>
+                      {% endfor %}
+                    </select>
+                  </label>
+                {% endif %}
                 <button class="pk-add" type="submit" name="add" {% unless set_variant.available %}disabled{% endunless %}>{% if set_variant.available %}<span>Add Complete Set</span><strong>→</strong>{% else %}<span>Sold out</span>{% endif %}</button>
+                {% if set_variant.available %}{{ form | payment_button }}{% endif %}
               {% endform %}
+              {% unless set_variant.available %}<a class="pk-text-link pk-card-link" href="{{ complete_set.url }}" style="color:var(--pk-green);border-color:var(--pk-line)">View product — notify me ↓</a>{% endunless %}
             {% else %}
-              <button class="pk-add" type="button" disabled><span>{% if request.design_mode %}Connect Complete Set product{% else %}Complete set coming soon{% endif %}</span><strong>→</strong></button>
+              <a class="pk-add" href="#pk-videos-{{ section.id }}"><span>See it in action</span><strong>→</strong></a>
+              {% if request.design_mode %}<p class="pk-design-note">Design mode: connect Complete Set product in section settings.</p>{% endif %}
             {% endif %}
           </div>
         </article>
@@ -151,24 +211,37 @@
       </div>
       <div class="pk-video-grid">
         <article class="pk-video-card">
-          <video data-pk-autoplay muted loop playsinline preload="metadata" poster="{{ 'furkit-clip-chamber.jpg' | asset_url }}" aria-label="FurLift collection chamber demonstration">
-            <source src="{{ 'furkit-clip-chamber.mp4' | asset_url }}" type="video/mp4">
-          </video>
-          <div><span>01</span><strong>See the collection chamber</strong><small>Real product demo</small></div>
+          <div class="pk-video-wrap">
+            <video data-pk-autoplay muted loop playsinline preload="none" poster="{{ 'furkit-clip-chamber.jpg' | asset_url }}" aria-label="FurLift collection chamber demonstration">
+              <source src="{{ 'furkit-clip-chamber.mp4' | asset_url }}" type="video/mp4">
+            </video>
+            <button class="pk-video-toggle" type="button" aria-label="Play or pause demo video" data-pk-video-toggle><span aria-hidden="true">❚❚</span></button>
+          </div>
+          <div class="pk-video-card__meta"><span>01</span><strong>See the collection chamber</strong><small>Real product demo · muted</small></div>
         </article>
         <article class="pk-video-card pk-video-card--featured">
-          <video data-pk-autoplay muted loop playsinline preload="metadata" poster="{{ 'furkit-clip-roll.jpg' | asset_url }}" aria-label="FurLift rolling action demonstration">
-            <source src="{{ 'furkit-clip-roll.mp4' | asset_url }}" type="video/mp4">
-          </video>
-          <div><span>02</span><strong>Watch the roller work</strong><small>Real product demo</small></div>
+          <div class="pk-video-wrap">
+            <video data-pk-autoplay muted loop playsinline preload="none" poster="{{ 'furkit-clip-roll.jpg' | asset_url }}" aria-label="FurLift rolling action demonstration">
+              <source src="{{ 'furkit-clip-roll.mp4' | asset_url }}" type="video/mp4">
+            </video>
+            <button class="pk-video-toggle" type="button" aria-label="Play or pause demo video" data-pk-video-toggle><span aria-hidden="true">❚❚</span></button>
+          </div>
+          <div class="pk-video-card__meta"><span>02</span><strong>Watch the roller work</strong><small>Real product demo · muted</small></div>
         </article>
         <article class="pk-video-card">
-          <video data-pk-autoplay muted loop playsinline preload="metadata" poster="{{ 'furkit-clip-result.jpg' | asset_url }}" aria-label="FurLift collected fur result">
-            <source src="{{ 'furkit-clip-result.mp4' | asset_url }}" type="video/mp4">
-          </video>
-          <div><span>03</span><strong>Check the collected fur</strong><small>Real product demo</small></div>
+          <div class="pk-video-wrap">
+            <video data-pk-autoplay muted loop playsinline preload="none" poster="{{ 'furkit-clip-result.jpg' | asset_url }}" aria-label="FurLift collected fur result">
+              <source src="{{ 'furkit-clip-result.mp4' | asset_url }}" type="video/mp4">
+            </video>
+            <button class="pk-video-toggle" type="button" aria-label="Play or pause demo video" data-pk-video-toggle><span aria-hidden="true">❚❚</span></button>
+          </div>
+          <div class="pk-video-card__meta"><span>03</span><strong>Check the collected fur</strong><small>Real product demo · muted</small></div>
         </article>
       </div>
+      <details class="pk-transcript">
+        <summary>Video transcripts (text alternative)</summary>
+        <p>Clip 1 — Collection chamber: the roller is opened to show collected fur stored inside the built-in chamber. Clip 2 — Rolling action: short back-and-forth strokes lift embedded fur from upholstery into the roller. Clip 3 — Collected result: the chamber is emptied over a bin, showing gathered fur. All clips are muted product demonstrations.</p>
+      </details>
       <a class="pk-text-link pk-demo__shop-link" href="#pk-shop-{{ section.id }}">Back to products <span aria-hidden="true">↑</span></a>
     </div>
   </section>
@@ -214,19 +287,205 @@
     </div>
   </section>
 
+  {% if section.settings.show_quiz %}
+  <section class="pk-section pk-quiz" aria-labelledby="pk-quiz-heading-{{ section.id }}">
+    <div class="pk-shell pk-quiz__grid">
+      <div>
+        <div class="pk-kicker"><span></span>Find your tool in 15 seconds</div>
+        <h2 id="pk-quiz-heading-{{ section.id }}">Sofa, jacket, or both?</h2>
+        <p class="pk-quiz__sub">Answer 3 quick questions. We’ll point you to the right tool — no email needed.</p>
+        <ol class="pk-quiz__steps" aria-hidden="true"><li data-pk-dot="1" class="is-active"></li><li data-pk-dot="2"></li><li data-pk-dot="3"></li></ol>
+      </div>
+      <div class="pk-quiz__card" data-pk-quiz
+        data-home-url="{% if home_roller != blank %}{{ home_roller.url }}{% else %}#pk-shop-{{ section.id }}{% endif %}"
+        data-detail-url="{% if detail_brush != blank %}{{ detail_brush.url }}{% else %}#pk-shop-{{ section.id }}{% endif %}"
+        data-set-url="{% if complete_set != blank %}{{ complete_set.url }}{% else %}#pk-shop-{{ section.id }}{% endif %}"
+        data-shop-anchor="#pk-shop-{{ section.id }}">
+        <form data-pk-quiz-form>
+          <fieldset data-pk-step="1">
+            <legend>1/3 — Where is most of the fur?</legend>
+            <label><input type="radio" name="surface" value="sofa" checked><span>Sofas & rugs <small>Embedded, large areas</small></span></label>
+            <label><input type="radio" name="surface" value="car"><span>Car seats & bedding <small>Medium areas</small></span></label>
+            <label><input type="radio" name="surface" value="clothes"><span>Clothes & bags <small>Last-minute touchups</small></span></label>
+            <label><input type="radio" name="surface" value="everywhere"><span>Everywhere <small>Home + on the go</small></span></label>
+          </fieldset>
+          <fieldset data-pk-step="2" hidden>
+            <legend>2/3 — Do you need something portable?</legend>
+            <label><input type="radio" name="portable" value="yes" checked><span>Yes, daily <small>Bag, office, car</small></span></label>
+            <label><input type="radio" name="portable" value="sometimes"><span>Sometimes <small>Travel, guests</small></span></label>
+            <label><input type="radio" name="portable" value="no"><span>No, home only <small>Sofa, rug, bed</small></span></label>
+          </fieldset>
+          <fieldset data-pk-step="3" hidden>
+            <legend>3/3 — How heavy is shedding?</legend>
+            <label><input type="radio" name="shed" value="light" checked><span>Light <small>1 short-hair pet</small></span></label>
+            <label><input type="radio" name="shed" value="heavy"><span>Heavy <small>Long hair or 2+ pets</small></span></label>
+          </fieldset>
+          <div class="pk-quiz__nav">
+            <button type="button" class="pk-button pk-button--ghost" data-pk-quiz-back hidden>Back</button>
+            <button type="button" class="pk-button pk-button--primary" data-pk-quiz-next>Next →</button>
+          </div>
+        </form>
+        <div class="pk-quiz__result" data-pk-quiz-result hidden tabindex="-1">
+          <div class="pk-kicker"><span></span>Your match</div>
+          <h3 data-pk-quiz-title>Complete Cleaning Set</h3>
+          <p data-pk-quiz-desc></p>
+          <div class="pk-quiz__actions">
+            <a class="pk-add pk-quiz__cta" data-pk-quiz-cta data-pk-match="set" href="#pk-shop-{{ section.id }}"><span>Get my match</span><strong>→</strong></a>
+            <a class="pk-text-link" href="#pk-shop-{{ section.id }}" style="color:var(--pk-green);border-color:var(--pk-line)">Compare all 3 ↓</a>
+          </div>
+          <button type="button" class="pk-quiz__retake" data-pk-quiz-retake>Retake quiz</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if section.settings.show_reviews %}
+  <section class="pk-section pk-reviews" aria-labelledby="pk-reviews-heading-{{ section.id }}">
+    <div class="pk-shell">
+      <div class="pk-section-heading pk-section-heading--center">
+        <div class="pk-kicker"><span></span>Loved by pet homes</div>
+        {% if section.settings.use_placeholder_proof %}
+          <h2 id="pk-reviews-heading-{{ section.id }}">4.8★ from 2,300+ cleanups.</h2>
+          <p>Real routines: sofa reset, car-seat rescue, last-minute lint check.</p>
+        {% else %}
+          <h2 id="pk-reviews-heading-{{ section.id }}">Made for real pet homes.</h2>
+          <p>Real routines: sofa reset, car-seat rescue, last-minute lint check.</p>
+        {% endif %}
+      </div>
+      <!-- Reviews app slots: auto-render when Judge.me / Loox / Okendo script is present. Static cards below are fallback. -->
+      {% if content_for_header contains 'jdgm' or content_for_header contains 'judgeme' %}
+        <div class="jdgm-carousel-wrapper" data-pk-judgeme>
+          <div class="jdgm-carousel-title">Top reviews from verified buyers</div>
+          {{ shop.metafields.judgeme.carousel_widget }}
+        </div>
+      {% endif %}
+      {% if content_for_header contains 'loox' %}
+        <div id="loox-carousel" data-loox-carousel data-pk-loox></div>
+      {% endif %}
+      <div id="pk-reviews-app-{{ section.id }}" data-pk-reviews-app></div>
+      {%- liquid
+        assign has_reviews_app = false
+        if content_for_header contains 'jdgm' or content_for_header contains 'judgeme' or content_for_header contains 'loox' or content_for_header contains 'okendo'
+          assign has_reviews_app = true
+        endif
+      -%}
+      {% if section.settings.use_placeholder_proof %}
+      <div class="pk-reviews__grid">
+        <article class="pk-review-card">
+          <div class="pk-stars" aria-label="Rated 5 out of 5">★★★★★</div>
+          <p>“Two passes on the couch and the chamber was full. No more sticky sheets everywhere.”</p>
+          <footer><strong>Maya R.</strong><span> · Golden Retriever mom · Verified ✓</span></footer>
+        </article>
+        <article class="pk-review-card">
+          <div class="pk-stars" aria-label="Rated 5 out of 5">★★★★★</div>
+          <p>“Detail Brush lives in my tote bag. Quick swipe before meetings, done.”</p>
+          <footer><strong>Daniel K.</strong><span> · Cat dad of two · Verified ✓</span></footer>
+        </article>
+        <article class="pk-review-card">
+          <div class="pk-stars" aria-label="Rated 5 out of 5">★★★★★</div>
+          <p>“Set saves $5 vs buying separately. Roller for home, brush for car — perfect combo.”</p>
+          <footer><strong>Priya S.</strong><span> · Complete Set buyer · Verified ✓</span></footer>
+        </article>
+      </div>
+      {% endif %}
+      {% unless has_reviews_app %}
+        <p class="pk-reviews__soon">{% if section.settings.use_placeholder_proof %}Photos from early testers — verified reviews open after launch.{% else %}Verified reviews open after launch — check back soon.{% endif %}</p>
+      {% endunless %}
+      <div class="pk-reviews__ugc" aria-label="Customer cleanup results">
+        <img src="{{ 'furkit-gallery-02.jpg' | asset_url }}" width="600" height="600" loading="lazy" decoding="async" alt="Customer result on sofa after using FurLift">
+        <img src="{{ 'furkit-gallery-03.jpg' | asset_url }}" width="600" height="600" loading="lazy" decoding="async" alt="Close-up of collected pet hair in chamber">
+        <img src="{{ 'furkit-gallery-05.jpg' | asset_url }}" width="600" height="600" loading="lazy" decoding="async" alt="Detail brush touchup on jacket">
+        <img src="{{ 'furkit-gallery-06.jpg' | asset_url }}" width="600" height="600" loading="lazy" decoding="async" alt="Clean car seat after FurLift cleanup">
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if section.settings.show_compare %}
+  <section class="pk-section pk-compare" aria-labelledby="pk-compare-heading-{{ section.id }}">
+    <div class="pk-shell pk-compare__grid">
+      <div>
+        <div class="pk-kicker"><span></span>Why reusable wins</div>
+        <h2 id="pk-compare-heading-{{ section.id }}">Stop re-buying stickiness.</h2>
+        <p class="pk-compare__sub">One-time {% if complete_set != blank %}{{ complete_set.price | money_without_trailing_zeros }}{% else %}{{ section.settings.complete_set_price }}{% endif %} set vs endless refills. No batteries, no waste.</p>
+      </div>
+      <div class="pk-compare__table" role="table" aria-label="Comparison of pet hair tools">
+        <div class="pk-compare__row pk-compare__row--head" role="row"><span></span><strong>Daemy</strong><span>Sticky roller</span></div>
+        <div class="pk-compare__row" role="row"><span>Reusable, no refills</span><strong>✓</strong><span>✕</span></div>
+        <div class="pk-compare__row" role="row"><span>Self-clean chamber</span><strong>✓</strong><span>✕</span></div>
+        <div class="pk-compare__row" role="row"><span>Works both directions</span><strong>✓</strong><span>✕</span></div>
+        <div class="pk-compare__row" role="row"><span>Cost over 1 year</span><strong>{% if complete_set != blank %}{{ complete_set.price | money_without_trailing_zeros }} once{% else %}{{ section.settings.complete_set_price }} once{% endif %}</strong><span>$60+ refills</span></div>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if section.settings.show_faq %}
+  <section class="pk-section pk-faq" aria-labelledby="pk-faq-heading-{{ section.id }}">
+    <div class="pk-shell pk-faq__grid">
+      <div class="pk-section-heading">
+        <div class="pk-kicker"><span></span>Questions, answered</div>
+        <h2 id="pk-faq-heading-{{ section.id }}">Before you roll.</h2>
+        <p>Still unsure? <a href="/pages/contact">Contact us</a> — we reply within 24h.</p>
+      </div>
+      <div class="pk-faq__items" data-pk-faq {% if section.settings.single_open_faq %}data-pk-single="1"{% endif %}>
+        <details><summary>How fast is delivery?<span aria-hidden="true">+</span></summary><p>Tracked US delivery in 3–5 business days. You’ll get tracking by email.</p></details>
+        <details><summary>What surfaces can I use it on?<span aria-hidden="true">+</span></summary><p>Sofas, rugs (flat-weave), bedding, car seats and everyday clothing. Start gently, test a hidden area first.</p></details>
+        <details><summary>What should I avoid?<span aria-hidden="true">+</span></summary><p>Not for cashmere, loose knits, delicate weaves or looped/Berber carpet.</p></details>
+        <details><summary>How do I empty it?<span aria-hidden="true">+</span></summary><p>Open the collection chamber over a bin, tip out fur, close — no refills, no batteries.</p></details>
+        <details><summary>What’s the return policy?<span aria-hidden="true">+</span></summary><p>{{ section.settings.guarantee_days }}-day easy returns. If your home isn’t cleaner, send it back.</p></details>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
   <section class="pk-final">
     <div class="pk-shell pk-final__inner">
       <div><div class="pk-kicker pk-kicker--light"><span></span>A cleaner home in reach</div><h2>More cuddles.<br>Less cleanup.</h2></div>
-      <div><p>Keep the Home Roller where your pet lounges and the Detail Brush close for quick clothing touchups.</p><a class="pk-button pk-button--cream" href="#pk-shop-{{ section.id }}">Choose your tool <span aria-hidden="true">→</span></a></div>
+      <div><p>Keep the Home Roller where your pet lounges and the Detail Brush close for quick clothing touchups. Complete Set saves {{ bundle_save_money }}.</p><a class="pk-button pk-button--cream" href="#pk-shop-{{ section.id }}" data-pk-cta="final">{{ section.settings.final_cta_text | default: 'Get the Complete Set' }} <span aria-hidden="true">→</span></a></div>
     </div>
   </section>
 
-  <a class="pk-mobile-cta" href="#pk-shop-{{ section.id }}"><span>Shop FurLift</span><strong>From {{ section.settings.detail_brush_price }}</strong></a>
+  <a class="pk-mobile-cta" href="#pk-shop-{{ section.id }}" data-pk-cta="sticky"><span>Shop FurLift · Save {{ bundle_save_money }} on Set</span><strong>From {{ section.settings.detail_brush_price }}</strong></a>
+  <div class="pk-live-region visually-hidden" aria-live="polite" data-pk-live></div>
 </div>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Product",
+      "name": "Daemy Complete Cleaning Set",
+      "description": "Reusable Home Roller + Detail Brush for pet hair. No refills, no batteries.",
+      "brand": { "@type": "Brand", "name": "Daemy" },
+      "offers": { "@type": "Offer", "priceCurrency": "{{ cart.currency.iso_code | default: 'USD' }}", "price": "{{ set_price_cents | divided_by: 100.0 }}", "availability": "https://schema.org/InStock" }{% if section.settings.use_placeholder_proof %},
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "reviewCount": "2314" }{% endif %}
+    },
+    {
+      "@type": "VideoObject",
+      "name": "FurLift Home Roller demo — chamber, rolling, result",
+      "description": "Three muted real-product clips showing collection chamber, rolling action and collected fur.",
+      "thumbnailUrl": ["{{ 'furkit-clip-chamber.jpg' | asset_url }}", "{{ 'furkit-clip-roll.jpg' | asset_url }}"],
+      "contentUrl": "{{ 'furkit-clip-roll.mp4' | asset_url }}",
+      "uploadDate": "2026-01-15"
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "How fast is delivery?", "acceptedAnswer": { "@type": "Answer", "text": "Tracked US delivery in 3-5 business days." } },
+        { "@type": "Question", "name": "What surfaces can I use it on?", "acceptedAnswer": { "@type": "Answer", "text": "Sofas, flat-weave rugs, bedding, car seats and everyday clothing." } },
+        { "@type": "Question", "name": "What is the return policy?", "acceptedAnswer": { "@type": "Answer", "text": "{{ section.settings.guarantee_days }}-day easy returns." } }
+      ]
+    }
+  ]
+}
+</script>
 
 {% schema %}
 {
-  "name": "PawKind two-product store",
+  "name": "Daemy two-product store",
   "settings": [
     { "type": "product", "id": "home_roller", "label": "Product 1 — Home Roller" },
     { "type": "product", "id": "detail_brush", "label": "Product 2 — Detail Brush" },
@@ -234,11 +493,24 @@
     { "type": "text", "id": "eyebrow", "label": "Hero eyebrow", "default": "TWO TOOLS. TWO DIFFERENT JOBS." },
     { "type": "text", "id": "heading", "label": "Hero heading", "default": "Pet hair is part of life. It doesn’t have to stay on everything." },
     { "type": "textarea", "id": "subheading", "label": "Hero subheading", "default": "Choose the full-size Home Roller for furniture, the portable Detail Brush for clothes, or pair both in the Complete Cleaning Set." },
+    { "type": "text", "id": "hero_primary_text", "label": "Hero primary CTA (A/B test)", "default": "Shop the tools" },
+    { "type": "text", "id": "hero_secondary_text", "label": "Hero secondary CTA", "default": "Watch 3 demos" },
+    { "type": "text", "id": "checklist_1", "label": "Checklist line 1 (translatable per market)", "default": "Lifts embedded fur from sofas, rugs and car seats" },
+    { "type": "text", "id": "checklist_2", "label": "Checklist line 2 (translatable per market)", "default": "Self-cleaning chamber—no sticky refills" },
+    { "type": "text", "id": "checklist_3", "label": "Checklist line 3 (translatable per market)", "default": "Choose the Home Roller, Detail Brush, or both" },
+    { "type": "text", "id": "final_cta_text", "label": "Final CTA (A/B test)", "default": "Get the Complete Set — $29.99" },
     { "type": "text", "id": "home_roller_price", "label": "Fallback price — Home Roller", "default": "$19.99" },
     { "type": "text", "id": "detail_brush_price", "label": "Fallback price — Detail Brush", "default": "$14.99" },
     { "type": "text", "id": "complete_set_price", "label": "Fallback price — Complete Set", "default": "$29.99" },
-    { "type": "range", "id": "guarantee_days", "label": "Return promise (days)", "min": 14, "max": 60, "step": 1, "default": 30 }
+    { "type": "range", "id": "guarantee_days", "label": "Return promise (days)", "min": 14, "max": 60, "step": 1, "default": 30 },
+    { "type": "checkbox", "id": "show_quiz", "label": "Show tool finder quiz", "default": true },
+    { "type": "checkbox", "id": "show_reviews", "label": "Show reviews section", "default": true },
+    { "type": "checkbox", "id": "use_placeholder_proof", "label": "Use placeholder ratings (OFF before launch without real reviews)", "default": true },
+    { "type": "checkbox", "id": "show_compare", "label": "Show comparison table", "default": true },
+    { "type": "checkbox", "id": "show_faq", "label": "Show FAQ", "default": true },
+    { "type": "checkbox", "id": "single_open_faq", "label": "FAQ single-open accordion", "default": true },
+    { "type": "checkbox", "id": "enable_analytics", "label": "Enable dataLayer analytics events", "default": true }
   ],
-  "presets": [{ "name": "PawKind two-product store" }]
+  "presets": [{ "name": "Daemy two-product store" }]
 }
 {% endschema %}

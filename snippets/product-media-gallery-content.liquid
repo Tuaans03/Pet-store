@@ -856,6 +856,12 @@
         translate(var(--drag-zoom-translate-x, 0), var(--drag-zoom-translate-y, 0));
     }
 
+    .dialog-zoomed-gallery .product-media--low-resolution .product-media__image {
+      width: min(100%, calc(var(--media-natural-width) * 1.5));
+      height: min(100%, calc(var(--media-natural-height) * 1.5));
+      margin: auto;
+    }
+
     .media-gallery--hint {
       --slideshow-gap: var(--gap-2xs);
 
