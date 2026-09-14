@@ -324,6 +324,12 @@ class ProductFormComponent extends Component {
   handleSubmit(event) {
     event.preventDefault();
 
+    const submitter = /** @type {SubmitEvent} */ (event).submitter;
+    if (submitter instanceof HTMLElement && submitter.matches('[data-direct-checkout]')) {
+      this.#directCheckout(submitter);
+      return;
+    }
+
     if (this.#variantChangeInProgress) {
       this.#addToCartQueue.push(this.#createQueuedAddToCartItem());
       this.refs.addToCartButtonContainer?.animateAddToCart?.();
@@ -336,6 +342,78 @@ class ProductFormComponent extends Component {
   /** @returns {number} */
   #getQuantity() {
     return Number(this.refs.quantitySelector?.getValue?.()) || Number(this.dataset.quantityDefault) || 1;
+  }
+
+  /** @returns {string} */
+  #getCheckoutUrl() {
+    if (Theme.routes.cart_url?.endsWith('/cart')) {
+      return Theme.routes.cart_url.replace(/\/cart$/, '/checkout');
+    }
+
+    return '/checkout';
+  }
+
+  /** @param {HTMLElement} button */
+  async #directCheckout(button) {
+    if (button.hasAttribute('disabled')) return;
+
+    const form = this.querySelector('form');
+    if (!form) throw new Error('Product form element missing');
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    if (this.#variantChangeInProgress) {
+      await this.#pendingVariantChange?.catch((error) => {
+        if (error?.name !== 'AbortError') console.warn('[product-form] Variant change before checkout failed:', error);
+      });
+    }
+
+    const addToCartButton = this.refs.addToCartButtonContainer?.refs.addToCartButton;
+    if (addToCartButton?.disabled) return;
+
+    const formData = new FormData(form);
+    formData.set('quantity', this.#getQuantity().toString());
+
+    button.setAttribute('disabled', 'true');
+    button.setAttribute('aria-busy', 'true');
+
+    try {
+      const fetchCfg = fetchConfig('javascript', { body: formData });
+      const response = await fetch(Theme.routes.cart_add_url, {
+        ...fetchCfg,
+        headers: {
+          ...fetchCfg.headers,
+          Accept: 'application/json',
+        },
+      });
+      const payload = await response.json();
+
+      if (!response.ok || payload.status) {
+        throw payload;
+      }
+
+      window.location.href = this.#getCheckoutUrl();
+    } catch (error) {
+      const message =
+        error?.message || error?.description || error?.errors || 'Unable to start checkout. Please try again.';
+      const { addToCartTextError } = this.refs;
+
+      if (addToCartTextError) {
+        addToCartTextError.classList.remove('hidden');
+        const textNode = addToCartTextError.childNodes[2];
+        if (textNode) {
+          textNode.textContent = message;
+        } else {
+          addToCartTextError.appendChild(document.createTextNode(message));
+        }
+        this.#setLiveRegionText(message);
+      }
+
+      button.removeAttribute('disabled');
+      button.removeAttribute('aria-busy');
+    }
   }
 
   /** @returns {QueuedAddToCartItem} */

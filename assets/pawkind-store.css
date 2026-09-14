@@ -237,8 +237,6 @@
 .pk-variant-select { min-height:46px; padding:0 14px; border:1px solid var(--pk-line); border-radius:12px; background:#fff; color:var(--pk-ink); font:inherit; font-size:.86rem; font-weight:600; text-transform:none; letter-spacing:normal; }
 .pk-card-link { margin-top:12px; font-size:.82rem; }
 .pk-design-note { margin-top:10px; font-size:.72rem; color:rgba(31,45,38,.66); }
-.pk-card-form .shopify-payment-button { margin-top:10px; }
-.pk-card-form .shopify-payment-button__button { border-radius:999px !important; min-height:52px; }
 .pk-shop-card--highlight { outline:3px solid var(--pk-orange); outline-offset:4px; }
 .pk-pairing { background: var(--pk-paper); }
 .pk-pairing__grid { max-width:900px; margin-inline:auto; }
