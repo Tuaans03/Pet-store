@@ -5,8 +5,27 @@
   assign home_roller = section.settings.home_roller
   assign detail_brush = section.settings.detail_brush
   assign complete_set = section.settings.complete_set
+  if home_roller == blank
+    assign home_roller = all_products['2-in-1-pet-hair-removal-roller-multifunctional-portable-washable-hair-removal-brush-pet-supplies']
+  endif
+  if detail_brush == blank
+    assign detail_brush = all_products['2-1-reusable-pet-hair-remover-brush-lint-roller-portable-effective-self-cleaning-tool-for-cat-dog-fur-hair-dust-removal-brush']
+  endif
+  if complete_set == blank
+    assign complete_set = all_products['complete-cleaning-set']
+  endif
   if home_roller == blank and detail_brush == blank and complete_set == blank
     assign home_roller = collections.all.products.first
+  endif
+
+  assign home_roller_url = '/products/2-in-1-pet-hair-removal-roller-multifunctional-portable-washable-hair-removal-brush-pet-supplies'
+  assign detail_brush_url = '/products/2-1-reusable-pet-hair-remover-brush-lint-roller-portable-effective-self-cleaning-tool-for-cat-dog-fur-hair-dust-removal-brush'
+  assign complete_set_url = '/products/2-in-1-pet-hair-removal-roller-multifunctional-portable-washable-hair-removal-brush-pet-supplies'
+  if home_roller != blank
+    assign home_roller_url = home_roller.url
+  endif
+  if detail_brush != blank
+    assign detail_brush_url = detail_brush.url
   endif
 
   assign set_price_cents = 2999
@@ -94,7 +113,7 @@
 
       <div class="pk-shop__grid">
         <article class="pk-shop-card" data-pk-shop-key="home">
-          <a class="pk-shop-card__media" {% if home_roller != blank %}href="{{ home_roller.url }}"{% else %}href="#pk-videos-{{ section.id }}"{% endif %} aria-label="View FurLift Home Roller">
+          <a class="pk-shop-card__media" href="{{ home_roller_url }}" aria-label="View FurLift Home Roller">
             <img src="{{ 'kit-detail-07.jpg' | asset_url }}" width="800" height="721" alt="FurLift Home Roller" loading="lazy" decoding="async">
             <span>01 · LARGE SURFACES</span>
           </a>
@@ -115,18 +134,17 @@
                   </label>
                 {% endif %}
                 <button class="pk-add" type="submit" name="add" {% unless home_variant.available %}disabled{% endunless %}>{% if home_variant.available %}<span>Add Home Roller</span><strong>→</strong>{% else %}<span>Sold out</span>{% endif %}</button>
-                {% if home_variant.available %}{{ form | payment_button }}{% endif %}
               {% endform %}
-              {% unless home_variant.available %}<a class="pk-text-link pk-card-link" href="{{ home_roller.url }}" style="color:var(--pk-green);border-color:var(--pk-line)">View product — notify me ↓</a>{% endunless %}
+              {% unless home_variant.available %}<a class="pk-text-link pk-card-link" href="{{ home_roller_url }}" style="color:var(--pk-green);border-color:var(--pk-line)">View product — notify me ↓</a>{% endunless %}
             {% else %}
-              <a class="pk-add" href="#pk-videos-{{ section.id }}"><span>See it in action</span><strong>→</strong></a>
+              <a class="pk-add" href="{{ home_roller_url }}"><span>View product</span><strong>→</strong></a>
               {% if request.design_mode %}<p class="pk-design-note">Design mode: connect Home Roller product in section settings.</p>{% endif %}
             {% endif %}
           </div>
         </article>
 
         <article class="pk-shop-card" data-pk-shop-key="detail">
-          <a class="pk-shop-card__media" {% if detail_brush != blank %}href="{{ detail_brush.url }}"{% else %}href="#pk-videos-{{ section.id }}"{% endif %} aria-label="View FurLift Detail Brush">
+          <a class="pk-shop-card__media" href="{{ detail_brush_url }}" aria-label="View FurLift Detail Brush">
             <img src="{{ 'furkit-gallery-01.jpg' | asset_url }}" width="800" height="800" alt="FurLift portable Detail Brush" loading="lazy" decoding="async">
             <span>02 · CLOTHES & CORNERS</span>
           </a>
@@ -147,11 +165,10 @@
                   </label>
                 {% endif %}
                 <button class="pk-add" type="submit" name="add" {% unless detail_variant.available %}disabled{% endunless %}>{% if detail_variant.available %}<span>Add Detail Brush</span><strong>→</strong>{% else %}<span>Sold out</span>{% endif %}</button>
-                {% if detail_variant.available %}{{ form | payment_button }}{% endif %}
               {% endform %}
-              {% unless detail_variant.available %}<a class="pk-text-link pk-card-link" href="{{ detail_brush.url }}" style="color:var(--pk-green);border-color:var(--pk-line)">View product — notify me ↓</a>{% endunless %}
+              {% unless detail_variant.available %}<a class="pk-text-link pk-card-link" href="{{ detail_brush_url }}" style="color:var(--pk-green);border-color:var(--pk-line)">View product — notify me ↓</a>{% endunless %}
             {% else %}
-              <a class="pk-add" href="#pk-videos-{{ section.id }}"><span>See it in action</span><strong>→</strong></a>
+              <a class="pk-add" href="{{ detail_brush_url }}"><span>View product</span><strong>→</strong></a>
               {% if request.design_mode %}<p class="pk-design-note">Design mode: connect Detail Brush product in section settings.</p>{% endif %}
             {% endif %}
           </div>
@@ -159,7 +176,7 @@
 
         <article class="pk-shop-card pk-shop-card--bundle" data-pk-shop-key="set">
           <div class="pk-shop-card__tag">BEST VALUE · SAVE {{ bundle_save_money | upcase }}</div>
-          <a class="pk-shop-card__media" {% if complete_set != blank %}href="{{ complete_set.url }}"{% else %}href="#pk-videos-{{ section.id }}"{% endif %} aria-label="View Complete Cleaning Set">
+          <a class="pk-shop-card__media" href="{{ complete_set_url }}" aria-label="View Complete Cleaning Set">
             <div class="pk-shop-card__pair">
               <img src="{{ 'kit-detail-07.jpg' | asset_url }}" width="800" height="721" alt="FurLift Home Roller" loading="lazy" decoding="async">
               <img src="{{ 'furkit-gallery-04.jpg' | asset_url }}" width="800" height="800" alt="FurLift Detail Brush" loading="lazy" decoding="async">
@@ -187,11 +204,10 @@
                   </label>
                 {% endif %}
                 <button class="pk-add" type="submit" name="add" {% unless set_variant.available %}disabled{% endunless %}>{% if set_variant.available %}<span>Add Complete Set</span><strong>→</strong>{% else %}<span>Sold out</span>{% endif %}</button>
-                {% if set_variant.available %}{{ form | payment_button }}{% endif %}
               {% endform %}
-              {% unless set_variant.available %}<a class="pk-text-link pk-card-link" href="{{ complete_set.url }}" style="color:var(--pk-green);border-color:var(--pk-line)">View product — notify me ↓</a>{% endunless %}
+              {% unless set_variant.available %}<a class="pk-text-link pk-card-link" href="{{ complete_set_url }}" style="color:var(--pk-green);border-color:var(--pk-line)">View product — notify me ↓</a>{% endunless %}
             {% else %}
-              <a class="pk-add" href="#pk-videos-{{ section.id }}"><span>See it in action</span><strong>→</strong></a>
+              <a class="pk-add" href="{{ complete_set_url }}"><span>View product</span><strong>→</strong></a>
               {% if request.design_mode %}<p class="pk-design-note">Design mode: connect Complete Set product in section settings.</p>{% endif %}
             {% endif %}
           </div>
@@ -297,9 +313,9 @@
         <ol class="pk-quiz__steps" aria-hidden="true"><li data-pk-dot="1" class="is-active"></li><li data-pk-dot="2"></li><li data-pk-dot="3"></li></ol>
       </div>
       <div class="pk-quiz__card" data-pk-quiz
-        data-home-url="{% if home_roller != blank %}{{ home_roller.url }}{% else %}#pk-shop-{{ section.id }}{% endif %}"
-        data-detail-url="{% if detail_brush != blank %}{{ detail_brush.url }}{% else %}#pk-shop-{{ section.id }}{% endif %}"
-        data-set-url="{% if complete_set != blank %}{{ complete_set.url }}{% else %}#pk-shop-{{ section.id }}{% endif %}"
+        data-home-url="{{ home_roller_url }}"
+        data-detail-url="{{ detail_brush_url }}"
+        data-set-url="{{ complete_set_url }}"
         data-shop-anchor="#pk-shop-{{ section.id }}">
         <form data-pk-quiz-form>
           <fieldset data-pk-step="1">

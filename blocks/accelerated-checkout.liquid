@@ -18,13 +18,7 @@
   endif
 %}
 
-{% capture accelerated_checkout_button %}
-  {% if product != blank and form_obj != blank %}
-    {{ form_obj | payment_button }}
-  {% endif %}
-{% endcapture %}
-
-{% if accelerated_checkout_button != blank %}
+{% if product != blank and form_obj != blank %}
   <div
     class="accelerated-checkout-block"
     ref="acceleratedCheckoutButtonContainer"
@@ -36,7 +30,14 @@
       hidden
     {% endunless %}
   >
-    {{ accelerated_checkout_button }}
+    <button
+      type="submit"
+      name="checkout"
+      class="button"
+      data-direct-checkout
+    >
+      Payment
+    </button>
   </div>
 {% endif %}
 
